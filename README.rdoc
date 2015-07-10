@@ -1,3 +1,13 @@
+How to setup:
+1. Install Rails 4
+2. Clone the repository
+3. run “bundle install” in the project root directory
+4. run “rake db:schema:load” in terminal
+5. run “rails server”
+
+If there’s an ExecJS error, try installing NodeJs and use that as the JS runtime for rails.
+
+
 == README
 
 This README would normally document whatever steps are necessary to get the
