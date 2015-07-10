@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  patient: 1
+  heart_rate: MyString
+  blood_pressure: MyString
+
+two:
+  patient: 1
+  heart_rate: MyString
+  blood_pressure: MyString
