@@ -1,0 +1,95 @@
+<% provide(:title, @patient.name) %>
+
+<div class="row">
+  <aside class="col-md-4">
+    <section class="user_info">
+      <h1>
+        <img class="gravatar" src="https://secure.gravatar.com/avatar/c05b751d68fb8995cc3c7e4fbc1580dc">
+        <%= @patient.name %>
+      </h1>
+    </section>
+  </aside>
+</div>
+
+<div class="timepicker">
+  <%= render 'patients/datetimepicker' %>
+</div>
+
+<span id="nav_btns">
+  <button type="button" onclick="shiftChart('backward')">&lt;&lt; Back</button>
+  <button type="button" onclick="shiftChart('forward')">Advance &gt;&gt;</button>
+  <!-- <button type="button" onclick="getData()">Get Chart!</button> -->
+  <!-- <button type="button" onclick="clearChart()">Clear!</button> -->
+</span>
+
+<%= render 'patients/icheck' %>
+
+<div class="monitor">
+  <div class="d3_chart" id="ekg"></div>
+</div>
+
+<%= javascript_tag do %>
+  var selection_range = [];
+  var signals = [];
+  var patient_id = <%= @patient.id %>;
+
+  function getData() {
+    if (selection_range.length < 2) {
+      alert("Please select a proper range");
+      return;
+    }
+    if (signals.length == 0) {
+      alert("Please select at least one signal");
+      return;
+    }
+
+    $.ajax({
+      type: "POST",
+      url: '/data',
+      data: {
+        patient: <%= @patient.id %>,
+        range: selection_range,
+        types: signals
+      },
+      success: function(data) {
+        if ($("#ekg").html() == "") {
+          chart1 = sliderChart().setData(data, true).render();
+        } else {
+          //console.log(data);
+          chart1.setData(data, true).update();
+        }
+      }
+    });
+  }
+
+  function clearChart() {
+    $("#ekg").html("");
+  }
+
+  function shiftChart(option) {
+    if ($("#ekg").html() === "") {
+      return;
+    }
+    var diff = 10;
+    if (option === "forward") {
+      $('#datetimepicker6').data("DateTimePicker").date(new Date(selection_range[0].getTime() + diff*60000));
+      $('#datetimepicker7').data("DateTimePicker").date(new Date(selection_range[1].getTime() + diff*60000));
+    } else if (option === "backward") {
+      $('#datetimepicker6').data("DateTimePicker").date(new Date(selection_range[0].getTime() - diff*60000));
+      $('#datetimepicker7').data("DateTimePicker").date(new Date(selection_range[1].getTime() - diff*60000));
+    }
+    getData();
+  }
+
+  $(document).ready(function() {
+    var dispatcher = new WebSocketRails('localhost:3000/websocket');
+    var update_channel = dispatcher.subscribe('update12');
+    update_channel.bind('new', function(data) {
+      //$("#ekg").text("");
+      console.log(data);
+      data = JSON.parse(data);
+      chart1.setData(data, true).update();
+    });
+  });
+
+<% end %>

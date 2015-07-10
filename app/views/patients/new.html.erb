@@ -1,0 +1,21 @@
+<% provide(:title, 'New Patient') %>
+<h1>Add a Patient</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for(@patient) do |f| %>
+      <%= render 'shared/error_messages_patient' %>
+
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control' %>
+
+      <%= f.label :status %>
+      <%= f.text_field :status, class: 'form-control' %>
+
+      <%= f.label :description %>
+      <%= f.text_area :description, class: 'form-control' %>
+
+      <%= f.submit "Add patient", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,61 @@
+<span id="signals">
+  <% @types.each do |type| -%>
+  <label class="signal-selection"><input type="checkbox" class='icheck-me' data-skin="square" data-color="blue" type_id=<%= type.id %>> <%= type.name %></label>
+  <% end -%>
+</span>
+
+<%= javascript_tag do %>
+
+function icheck(){
+  if($(".icheck-me").length > 0){
+    $(".icheck-me").each(function(){
+      var $el = $(this);
+      var skin = ($el.attr('data-skin') !== undefined) ? "_" + $el.attr('data-skin') : "",
+      color = ($el.attr('data-color') !== undefined) ? "-" + $el.attr('data-color') : "";
+      var opt = {
+        checkboxClass: 'icheckbox' + skin + color,
+        radioClass: 'iradio' + skin + color,
+      }
+      $el.iCheck(opt);
+    });
+  }
+}
+
+$(function(){
+  icheck();
+  $(".icheckbox_square-blue").css("margin", "5px");
+  //$('input').iCheck('uncheck');
+  $(function() {
+    $('.icheck-me').each(function() {
+      if ($(this).parent().hasClass("checked")) {
+        signals.push(+($(this).attr("type_id")));
+      }
+    });
+    console.log(signals);
+    if (selection_range.length === 2 && selection_range[0] !== undefined && selection_range[1] !== undefined && signals.length > 0) {
+      getData();
+    }
+  });
+
+  $('.icheck-me').on('ifChecked', function(event) {
+    signals.push(+(event.currentTarget.attributes.type_id.nodeValue));
+    console.log(signals);
+    clearChart();
+    getData();
+  });
+
+  $('.icheck-me').on('ifUnchecked', function(event) {
+    var type_id = +(event.currentTarget.attributes.type_id.nodeValue);
+    var index = signals.indexOf(type_id);
+    if (index >= 0) {
+      signals.splice( index, 1 );
+    }
+    console.log(signals);
+    clearChart();
+    if (selection_range.length === 2 && selection_range[0] !== undefined && selection_range[1] !== undefined && signals.length !== 0) { 
+      getData();
+    }
+  });
+
+})
+<% end %>

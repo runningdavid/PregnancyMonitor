@@ -1,0 +1,16 @@
+<ul>
+  <% @patients.each do |patient| %>
+    <li>
+      <img src="http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg">
+      <h3><%= patient.name %></h3>
+      <nav class="patients_list_nav">
+	      <ul>
+	        <li><%= link_to "Show", patient_path(:id=>patient.id) %></li>
+    	    <li><a href="#">Edit</a></li>
+		      <li><%= link_to "Delete", patient_path(:id=>patient.id), method: :delete, data: { confirm: "Are you sure?" } %></li>
+		      <li><a href="#">Contact</a></li>
+		    </ul>
+	    </nav>
+    </li>
+  <% end %>
+</ul>

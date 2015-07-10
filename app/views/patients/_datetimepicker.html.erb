@@ -1,0 +1,64 @@
+<div class='container'>
+<div class='col-md-5'>
+<p><b>Start time</b></p>
+  <div class="form-group">
+      <div class='input-group date' id='datetimepicker6'>
+          <input type='text' class="form-control" />
+          <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+      </div>
+  </div>
+</div>
+<div class='col-md-5'>
+<p><b>End time</b></p>
+  <div class="form-group">
+      <div class='input-group date' id='datetimepicker7'>
+          <input type='text' class="form-control" />
+          <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+      </div>
+  </div>
+</div>
+</div>
+
+<%= javascript_tag do %>
+      $(function () {
+        // if the browser keeps the last user input dates
+        var datestr1 = $('#datetimepicker6 :input').val();
+        var datestr2 = $('#datetimepicker7 :input').val();
+
+        if (datestr1 !== undefined && datestr1 !== "" && datestr2 !== undefined && datestr2 !== "") {
+          selection_range[0] = moment(datestr1, "MM/DD/YYYY h:mm A").toDate();
+          console.log(moment(datestr1, "MM/DD/YYYY h:mm A"));
+          selection_range[1] = moment(datestr2, "MM/DD/YYYY h:mm A").toDate();
+          console.log(moment(datestr2, "MM/DD/YYYY h:mm A"));
+          console.log(selection_range);
+        }
+
+        console.log(<%= raw(@enabled_dates) %>);
+        $('#datetimepicker6').datetimepicker({
+          enabledDates: <%= raw(@enabled_dates) %>
+        });
+        $('#datetimepicker7').datetimepicker({
+          enabledDates: <%= raw(@enabled_dates) %>
+        });
+        $("#datetimepicker6").on("dp.change", function (e) {
+            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+            selection_range[0] = $('#datetimepicker6').data("DateTimePicker").date().toDate();
+            console.log(selection_range);
+            if (selection_range.length === 2 && selection_range[0] !== undefined && selection_range[1] !== undefined && signals.length > 0) {
+              getData();
+            }
+        });
+        $("#datetimepicker7").on("dp.change", function (e) {
+            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+            selection_range[1] = $('#datetimepicker7').data("DateTimePicker").date().toDate();
+            console.log(selection_range);
+            if (selection_range.length === 2 && selection_range[0] !== undefined && selection_range[1] !== undefined && signals.length > 0) {
+              getData();
+            }
+        });
+    });
+<% end %>

@@ -1,0 +1,13 @@
+<% provide(:title, "My Patients") %>
+<div class="row">
+  <div class="list_long">
+    <section class="patients_list">
+    	<% if !@patients.empty? %>
+          <%= render 'patients/list' %>
+        <% else %>
+          <%= render 'patients/empty' %>
+        <% end %>
+        <%= render 'patients/button' %>
+    </section>
+  </div>
+</div>
